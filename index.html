@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Om Chanukya Traders | Premium Clothing Store</title>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body data-theme="light">
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Navigation Bar -->
+    <header class="navbar">
+        <div class="logo-container" onclick="resetFilters()">
+            <div class="logo-icon" style="font-size: 1.3rem;">ॐ</div>
+            <div class="logo-text">Om Chanukya Traders</div>
+        </div>
+
+        <!-- Search Bar with dynamic suggestions -->
+        <div class="search-wrapper">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" class="search-bar" id="searchBar" placeholder="Search clothes, collections..." autocomplete="off">
+            <div class="suggestions-dropdown" id="suggestionsDropdown">
+                <div class="suggestion-header">Popular Searches</div>
+                <!-- Suggestions will be injected here by app.js -->
+            </div>
+        </div>
+
+        <div class="nav-actions">
+            <!-- Admin Mode Active Indicator -->
+            <div class="admin-mode-indicator" id="adminModeIndicator">
+                <i class="fa-solid fa-user-shield"></i> Admin Mode
+            </div>
+
+            <!-- Light/Dark Mode Switcher -->
+            <button class="nav-btn" id="themeToggle" title="Toggle Light/Dark Theme">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+
+            <!-- Admin Authentication Trigger -->
+            <button class="nav-btn" id="adminAuthBtn" title="Admin Control Panel">
+                <i class="fa-solid fa-lock"></i>
+            </button>
+
+            <!-- Cart Drawer Trigger -->
+            <button class="nav-btn cart-btn" id="cartToggle" title="Shopping Cart">
+                <i class="fa-solid fa-bag-shopping"></i>
+                <span class="cart-badge" id="cartCount">0</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero / Banner Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h4 class="hero-subtitle">New Collection 2026</h4>
+            <h1 class="hero-title">Elevate Your Daily Style & Comfort</h1>
+            <p class="hero-desc">Discover premium shirts, pants, shorts, pyjamas, and essentials crafted for exceptional comfort and style at Om Chanukya Traders.</p>
+            <button class="hero-btn" onclick="scrollToCatalog()">
+                Shop Collection <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+        <div class="hero-art">
+            <div class="hero-circle-accent"></div>
+            <!-- Dynamic SVG representation of Om Symbol ॐ -->
+            <svg class="hero-image" width="300" height="300" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.45));">
+                <circle cx="50" cy="50" r="45" stroke="url(#heroGrad)" stroke-width="1.5" stroke-dasharray="3 3" fill="url(#heroGrad)" fill-opacity="0.03"/>
+                <text x="50" y="59" dominant-baseline="middle" text-anchor="middle" font-size="52" fill="url(#heroGrad)" font-family="'Plus Jakarta Sans', 'Outfit', sans-serif" font-weight="900" style="filter: drop-shadow(0 4px 10px rgba(255, 159, 28, 0.3));">ॐ</text>
+                <defs>
+                    <linearGradient id="heroGrad" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#3b82f6"/>
+                        <stop offset="1" stop-color="#ff9f1c"/>
+                    </linearGradient>
+                </defs>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Category Filter Bar -->
+    <div class="category-container" id="catalog-section">
+        <div class="category-tabs" id="categoryTabs">
+            <div class="category-tab active" data-category="all">All Items</div>
+            <div class="category-tab" data-category="Shirts">Shirts</div>
+            <div class="category-tab" data-category="Pants">Pants</div>
+            <div class="category-tab" data-category="Shorts">Shorts</div>
+            <div class="category-tab" data-category="Pyjamas">Pyjamas</div>
+            <div class="category-tab" data-category="Inners">Inners</div>
+            <div class="category-tab" data-category="Towels">Towels</div>
+        </div>
+        <div class="catalog-info" id="catalogInfo">Showing 0 products</div>
+    </div>
+
+    <!-- Product Grid Catalog -->
+    <main class="product-grid" id="productGrid">
+        <!-- Products injected dynamically by JavaScript -->
+    </main>
+
+    <!-- Slide-out Cart Drawer -->
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="cart-header">
+            <div class="cart-title">
+                <i class="fa-solid fa-cart-shopping"></i> Shopping Cart
+            </div>
+            <button class="close-btn" id="cartClose">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="cart-body" id="cartItemsContainer">
+            <!-- Cart items injected here -->
+        </div>
+        <div class="cart-footer">
+            <div class="cart-summary-row">
+                <span>Subtotal</span>
+                <span id="cartSubtotal">Rs. 0</span>
+            </div>
+            <div class="cart-summary-row">
+                <span>Delivery</span>
+                <span style="color: var(--accent-color); font-weight: 700;">Store Pickup Only</span>
+            </div>
+            <div class="cart-summary-row total">
+                <span>Total Amount</span>
+                <span id="cartTotal">Rs. 0</span>
+            </div>
+            <!-- Checkout button templates formatting orders directly to WhatsApp -->
+            <button class="checkout-btn" id="whatsappCheckoutBtn">
+                <i class="fa-brands fa-whatsapp"></i> Order on WhatsApp
+            </button>
+        </div>
+    </div>
+
+    <!-- Product Detail Modal -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal-content">
+            <button class="modal-close" id="detailModalClose">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="detail-layout">
+                <div class="detail-img-container">
+                    <img src="" alt="Product Image" class="detail-img" id="detailImage">
+                </div>
+                <div class="detail-info">
+                    <div>
+                        <div class="detail-category" id="detailCategory">Category</div>
+                        <h2 class="detail-name" id="detailName">Product Name</h2>
+                        <div class="detail-price" id="detailPrice">Rs. 0</div>
+                        <p class="detail-desc" id="detailDesc">Product Description...</p>
+                    </div>
+
+                    <div>
+                        <!-- Color Swatches Choice -->
+                        <div class="detail-option-group">
+                            <div class="detail-option-title">Select Color</div>
+                            <div class="detail-colors" id="detailColorsContainer">
+                                <!-- Colors will be generated here -->
+                            </div>
+                        </div>
+
+                        <!-- Size Buttons Choice -->
+                        <div class="detail-option-group">
+                            <div class="detail-option-title">Select Size</div>
+                            <div class="detail-sizes" id="detailSizesContainer">
+                                <button class="detail-size-btn active">S</button>
+                                <button class="detail-size-btn">M</button>
+                                <button class="detail-size-btn">L</button>
+                                <button class="detail-size-btn">XL</button>
+                                <button class="detail-size-btn">XXL</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detail-buy-row">
+                        <button class="detail-add-to-cart" id="detailAddToCartBtn">
+                            <i class="fa-solid fa-cart-plus"></i> Add To Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Authentication Modal -->
+    <div class="modal-overlay" id="adminAuthModal">
+        <div class="modal-content form-modal">
+            <button class="modal-close" id="adminAuthClose">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h2 class="form-modal-title"><i class="fa-solid fa-lock"></i> Admin Login</h2>
+            <form id="adminAuthForm" onsubmit="handleAdminLogin(event)">
+                <div class="form-group">
+                    <label class="form-label" for="adminCode">Enter Admin Access Code</label>
+                    <input type="password" class="form-input" id="adminCode" placeholder="Default code is admin123" required>
+                </div>
+                <button type="submit" class="form-submit-btn">Login as Admin</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Product Add/Edit Modal -->
+    <div class="modal-overlay" id="adminProductModal">
+        <div class="modal-content form-modal" style="max-width: 600px;">
+            <button class="modal-close" id="adminProductClose">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h2 class="form-modal-title" id="adminModalTitle">Add New Product</h2>
+            <form id="adminProductForm" onsubmit="handleProductSubmit(event)">
+                <input type="hidden" id="editProductId">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="prodName">Product Name</label>
+                        <input type="text" class="form-input" id="prodName" placeholder="e.g. Classic Linen Shirt" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="prodCategory">Category</label>
+                        <select class="form-input" id="prodCategory" required>
+                            <option value="Shirts">Shirts</option>
+                            <option value="Pants">Pants</option>
+                            <option value="Shorts">Shorts</option>
+                            <option value="Pyjamas">Pyjamas</option>
+                            <option value="Inners">Inners</option>
+                            <option value="Towels">Towels</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="prodPrice">Price (Rs.)</label>
+                        <input type="number" class="form-input" id="prodPrice" placeholder="e.g. 799" required min="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="prodBadge">Product Tag / Badge</label>
+                        <input type="text" class="form-input" id="prodBadge" placeholder="e.g. New, Hot, 20% OFF">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="prodDesc">Description</label>
+                    <textarea class="form-input" id="prodDesc" placeholder="Enter product detailed specifications, fabrics..." required></textarea>
+                </div>
+
+                <!-- Color selector configurations -->
+                <div class="form-group">
+                    <label class="form-label">Product Color Variants</label>
+                    <div class="color-input-row">
+                        <input type="text" class="form-input color-input-val" id="colorNameInput" placeholder="Color Name (e.g. Sky Blue)">
+                        <input type="color" class="color-picker" id="colorHexInput" value="#3b82f6">
+                    </div>
+                    <button type="button" class="add-color-btn" onclick="addAdminColorTag()">
+                        <i class="fa-solid fa-plus"></i> Add Color
+                    </button>
+                    <div class="admin-colors-container" id="adminColorsContainer">
+                        <!-- Color tags will render here -->
+                    </div>
+                </div>
+
+                <!-- Custom Photo upload converts to base64 -->
+                <div class="form-group">
+                    <label class="form-label">Product Image</label>
+                    <div class="image-upload-wrapper">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <p>Click to Upload Image File or Drag & Drop</p>
+                        <input type="file" id="prodImageFile" accept="image/*" onchange="previewUploadedImage(event)">
+                    </div>
+                    <div style="text-align: center; margin: 0.5rem 0; font-weight: 700; font-size: 0.8rem; color: var(--text-muted);">OR</div>
+                    <input type="url" class="form-input" id="prodImageUrl" placeholder="Paste external image URL here">
+                    <img src="" alt="Upload Preview" class="upload-preview" id="imagePreview">
+                </div>
+
+                <button type="submit" class="form-submit-btn" style="margin-top: 1rem;" id="submitProductBtn">Save Product</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Floating Action Button (FAB) -->
+    <button class="admin-add-fab" id="adminAddFab" title="Add Product">
+        <i class="fa-solid fa-plus"></i>
+    </button>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-logo">Om Chanukya Traders</div>
+        <p class="footer-desc">Your ultimate hub for premium quality shirts, pants, shorts, pyjamas, and underwear. Experience high craftsmanship at the best prices.</p>
+        <div class="footer-links">
+            <a href="#" class="footer-link">Home</a>
+            <a href="#catalog-section" class="footer-link">Shop</a>
+            <a href="#" class="footer-link" onclick="openAdminPanel()">Admin Mode</a>
+        </div>
+        <p class="footer-copy">&copy; 2026 Om Chanukya Traders. All Rights Reserved. Built with ❤️.</p>
+    </footer>
+
+    <!-- Core App Logic -->
+    <script src="app.js"></script>
+</body>
+</html>
